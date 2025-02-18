@@ -1,0 +1,89 @@
+name: credit_hub_new
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.5 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  cached_network_image: 
+  device_preview:
+  device_info_plus: 
+  dio:
+  dotted_border:
+  equatable:
+  flutter_bloc: 
+  flutter_svg:
+  flutter_dotenv: 
+  freezed_annotation:
+  font_awesome_flutter:
+  fl_chart: 0.69.2
+  get:
+  gap:
+  google_fonts: 5.0.0
+  intl:
+  image_picker: 
+  json_annotation: 
+  logger:
+  retrofit:
+  pinput:  
+  shared_preferences:
+  stylish_bottom_bar:
+  calendar_date_picker2:
+  pull_to_refresh:
+  pretty_dio_logger: 
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  build_runner: 
+  flutter_lints: ^2.0.0
+  freezed:
+  json_serializable: 
+  retrofit_generator: 
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - .env
+    - assets/images/auth/header_signin.png
+    - assets/images/auth/coin_right_signin.png
+    - assets/images/auth/footer_signin.png
+    - assets/images/main/account.svg
+    - assets/images/main/history.svg
+    - assets/images/main/home.svg
+    - assets/images/main/notification.svg
+    - assets/images/main/filter.svg
+    - assets/images/main/back.svg
+    - assets/images/main/pos.png
+    - assets/images/main/banner_dashboard.png
+    - assets/images/main/banner_account.png
+    - assets/images/main/money_acc.png
+    - assets/images/main/money_add.png
+    - assets/images/main/noti.png
+    - assets/images/main/camera.png
+    - assets/images/main/rubbish.png
+    - assets/images/main/edit.png
+
+
+
+fonts:
+    - family: SFProDisplay
+      fonts:
+        - asset: assets/fonts/sf/SF-Pro-Display-Regular.otf
+        - asset: assets/fonts/sf/SF-Pro-Display-Medium.otf
+        - asset: assets/fonts/sf/SF-Pro-Display-Bold.otf
+        - asset: assets/fonts/sf/SF-Pro-Display-Black.otf
