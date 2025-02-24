@@ -45,4 +45,10 @@ abstract class MainService {
 
   @GET('/app/bankaccount/{id}')
   Future<HttpResponse<BaseResponse>> getAccount(@Path('id') int id);
+
+  @POST('/app/bankaccount/list')
+  Future<HttpResponse<BaseResponse>> searchAccount(@Body() AccountModel body);
+
+  @POST('/app/bankaccount/list')
+  Future<HttpResponse<BaseResponse>> filterAccount(@Body() AccountModel body);
 }
