@@ -11,5 +11,8 @@ class HistoryState with _$HistoryState {
     @Default([]) List<RequestHistory> data,
     RequestHistory? data_received,
     @Default('') String message,
+    @Default(1) int curPage,
+    @Default(true) bool canLoadMore,
+    @Default(false) bool shouldShowLoading,
   }) = _HistoryState;
 }

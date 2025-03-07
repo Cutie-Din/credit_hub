@@ -16,7 +16,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
   String selectedType = 'Tất cả';
   HistoryCubit get _cubit => Get.find<HistoryCubit>();
   TextEditingController searchController = TextEditingController();
-  ScrollController _scrollController = ScrollController();
+
+  late final ScrollController _scrollController;
+  late final VoidCallback _scrollListener;
+
   int pageNo = 1;
   int pageSize = 10;
   List<RequestHistory> requests = [];
@@ -43,10 +46,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
     await _cubit.postHistory(page_no: pageNo, page_size: pageSize);
   }
 
-  Future<void> _loadMore() async {
-    if (_cubit.state.status == HistoryStatus.loading) return;
-    pageNo++;
-    await _fetchData();
+  Future<void> _loadMore(ScrollController scrollController) async {
+    if (!_cubit.state.canLoadMore || _cubit.state.shouldShowLoading) return;
+
+    final pos = _scrollController.position;
+    if (pos.extentAfter < 10) {
+      await _cubit.postHistory(isLoadMore: true, page_no: _cubit.state.curPage, page_size: 10);
+    }
   }
 
   @override
@@ -54,12 +60,16 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.initState();
     _fetchData();
 
-    _scrollController.addListener(() {
-      if (!isSearching &&
-          _scrollController.position.pixels >= _scrollController.position.maxScrollExtent) {
-        _loadMore();
-      }
-    });
+    _scrollController = ScrollController();
+    _scrollListener = () => _loadMore(_scrollController);
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -237,45 +247,50 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Widget _buildTransactionList() {
     return Expanded(
-      child: ListView.builder(
-        controller: _scrollController,
-        itemCount: requests.length + 1,
-        itemBuilder: (context, index) {
-          if (index == requests.length) {
-            return const SizedBox();
-          }
+      child: BlocBuilder<HistoryCubit, HistoryState>(
+        bloc: _cubit,
+        builder: (context, state) {
+          return ListView.builder(
+            controller: _scrollController,
+            itemCount: state.data.length + (state.shouldShowLoading ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index == state.data.length) {
+                return state.shouldShowLoading ? const AppLoading() : const SizedBox();
+              }
 
-          final request = requests[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
-            child: GestureDetector(
-              onTap: () {
-                print('ID của request: ${request.id}');
-                Get.toNamed(
-                  AppRoute.historydetail.name,
-                  arguments: {"id": request.id},
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: AppColors.button,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey.withOpacity(0.5), width: 1.0),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildRequestDetails(request.status_name),
-                    _buildRequestValues(
-                      request.lot_no,
-                      request.date_request,
-                      request.money_request,
+              final request = state.data[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
+                child: GestureDetector(
+                  onTap: () {
+                    print('ID của request: ${request.id}');
+                    Get.toNamed(
+                      AppRoute.historydetail.name,
+                      arguments: {"id": request.id},
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: AppColors.button,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey.withOpacity(0.5), width: 1.0),
                     ),
-                  ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildRequestDetails(request.status_name),
+                        _buildRequestValues(
+                          request.lot_no,
+                          request.date_request,
+                          request.money_request,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         },
       ),

@@ -11,15 +11,46 @@ class HistoryCubit extends Cubit<HistoryState> {
 
   HistoryCubit(this.repo, this.appManager) : super(const HistoryState());
 
-  Future<void> postHistory({required int page_no, required int page_size}) async {
+  Future<void> postHistory(
+      {bool isLoadMore = false, required int page_no, required int page_size}) async {
     try {
-      emit(state.copyWith(status: HistoryStatus.loading));
-      HistoryModel postHistory = HistoryModel(page_no: page_no, page_size: page_size);
+      if (state.shouldShowLoading) return;
+
+      final nextPage = isLoadMore ? state.curPage + 1 : 1;
+
+      emit(state.copyWith(
+        status: HistoryStatus.loading,
+        shouldShowLoading: true,
+        curPage: nextPage,
+      ));
+
+      HistoryModel postHistory = HistoryModel(
+        page_no: nextPage,
+        page_size: 10,
+      );
+
       final response = await repo.postHistory(param: postHistory);
       final historyModel = HistoryModel.fromJson(response.data as Map<String, dynamic>);
-      emit(state.copyWith(status: HistoryStatus.success, data: historyModel.data));
+
+      List<RequestHistory> newData = List.from(state.data); // Sao chép danh sách cũ
+      newData.addAll(historyModel.data); // Thêm danh sách mới vào cuối danh sách cũ
+
+      // newData = [...state.data, ...historyModel.data];
+
+      final canLoadMore = historyModel.data.length >= 10;
+
+      emit(state.copyWith(
+        status: HistoryStatus.success,
+        data: newData,
+        canLoadMore: canLoadMore,
+        shouldShowLoading: false,
+      ));
     } catch (e) {
-      emit(state.copyWith(status: HistoryStatus.failure, message: e.toString()));
+      emit(state.copyWith(
+        status: HistoryStatus.failure,
+        message: e.toString(),
+        shouldShowLoading: false,
+      ));
     }
   }
 

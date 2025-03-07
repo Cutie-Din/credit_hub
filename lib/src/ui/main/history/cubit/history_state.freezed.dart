@@ -20,6 +20,10 @@ mixin _$HistoryState {
   List<RequestHistory> get data => throw _privateConstructorUsedError;
   RequestHistory? get data_received => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
+  int get curPage => throw _privateConstructorUsedError; // Trang hiện tại
+  bool get canLoadMore =>
+      throw _privateConstructorUsedError; // Có thể tải thêm dữ liệu không
+  bool get shouldShowLoading => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $HistoryStateCopyWith<HistoryState> get copyWith =>
@@ -36,7 +40,10 @@ abstract class $HistoryStateCopyWith<$Res> {
       {HistoryStatus status,
       List<RequestHistory> data,
       RequestHistory? data_received,
-      String message});
+      String message,
+      int curPage,
+      bool canLoadMore,
+      bool shouldShowLoading});
 
   $RequestHistoryCopyWith<$Res>? get data_received;
 }
@@ -58,6 +65,9 @@ class _$HistoryStateCopyWithImpl<$Res, $Val extends HistoryState>
     Object? data = null,
     Object? data_received = freezed,
     Object? message = null,
+    Object? curPage = null,
+    Object? canLoadMore = null,
+    Object? shouldShowLoading = null,
   }) {
     return _then(_value.copyWith(
       status: null == status
@@ -76,6 +86,18 @@ class _$HistoryStateCopyWithImpl<$Res, $Val extends HistoryState>
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String,
+      curPage: null == curPage
+          ? _value.curPage
+          : curPage // ignore: cast_nullable_to_non_nullable
+              as int,
+      canLoadMore: null == canLoadMore
+          ? _value.canLoadMore
+          : canLoadMore // ignore: cast_nullable_to_non_nullable
+              as bool,
+      shouldShowLoading: null == shouldShowLoading
+          ? _value.shouldShowLoading
+          : shouldShowLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -104,7 +126,10 @@ abstract class _$$HistoryStateImplCopyWith<$Res>
       {HistoryStatus status,
       List<RequestHistory> data,
       RequestHistory? data_received,
-      String message});
+      String message,
+      int curPage,
+      bool canLoadMore,
+      bool shouldShowLoading});
 
   @override
   $RequestHistoryCopyWith<$Res>? get data_received;
@@ -125,6 +150,9 @@ class __$$HistoryStateImplCopyWithImpl<$Res>
     Object? data = null,
     Object? data_received = freezed,
     Object? message = null,
+    Object? curPage = null,
+    Object? canLoadMore = null,
+    Object? shouldShowLoading = null,
   }) {
     return _then(_$HistoryStateImpl(
       status: null == status
@@ -143,6 +171,18 @@ class __$$HistoryStateImplCopyWithImpl<$Res>
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String,
+      curPage: null == curPage
+          ? _value.curPage
+          : curPage // ignore: cast_nullable_to_non_nullable
+              as int,
+      canLoadMore: null == canLoadMore
+          ? _value.canLoadMore
+          : canLoadMore // ignore: cast_nullable_to_non_nullable
+              as bool,
+      shouldShowLoading: null == shouldShowLoading
+          ? _value.shouldShowLoading
+          : shouldShowLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -154,7 +194,10 @@ class _$HistoryStateImpl with DiagnosticableTreeMixin implements _HistoryState {
       {this.status = HistoryStatus.initial,
       final List<RequestHistory> data = const [],
       this.data_received,
-      this.message = ''})
+      this.message = '',
+      this.curPage = 1,
+      this.canLoadMore = true,
+      this.shouldShowLoading = false})
       : _data = data;
 
   @override
@@ -174,10 +217,21 @@ class _$HistoryStateImpl with DiagnosticableTreeMixin implements _HistoryState {
   @override
   @JsonKey()
   final String message;
+  @override
+  @JsonKey()
+  final int curPage;
+// Trang hiện tại
+  @override
+  @JsonKey()
+  final bool canLoadMore;
+// Có thể tải thêm dữ liệu không
+  @override
+  @JsonKey()
+  final bool shouldShowLoading;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'HistoryState(status: $status, data: $data, data_received: $data_received, message: $message)';
+    return 'HistoryState(status: $status, data: $data, data_received: $data_received, message: $message, curPage: $curPage, canLoadMore: $canLoadMore, shouldShowLoading: $shouldShowLoading)';
   }
 
   @override
@@ -188,7 +242,10 @@ class _$HistoryStateImpl with DiagnosticableTreeMixin implements _HistoryState {
       ..add(DiagnosticsProperty('status', status))
       ..add(DiagnosticsProperty('data', data))
       ..add(DiagnosticsProperty('data_received', data_received))
-      ..add(DiagnosticsProperty('message', message));
+      ..add(DiagnosticsProperty('message', message))
+      ..add(DiagnosticsProperty('curPage', curPage))
+      ..add(DiagnosticsProperty('canLoadMore', canLoadMore))
+      ..add(DiagnosticsProperty('shouldShowLoading', shouldShowLoading));
   }
 
   @override
@@ -200,12 +257,24 @@ class _$HistoryStateImpl with DiagnosticableTreeMixin implements _HistoryState {
             const DeepCollectionEquality().equals(other._data, _data) &&
             (identical(other.data_received, data_received) ||
                 other.data_received == data_received) &&
-            (identical(other.message, message) || other.message == message));
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.curPage, curPage) || other.curPage == curPage) &&
+            (identical(other.canLoadMore, canLoadMore) ||
+                other.canLoadMore == canLoadMore) &&
+            (identical(other.shouldShowLoading, shouldShowLoading) ||
+                other.shouldShowLoading == shouldShowLoading));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, status,
-      const DeepCollectionEquality().hash(_data), data_received, message);
+  int get hashCode => Object.hash(
+      runtimeType,
+      status,
+      const DeepCollectionEquality().hash(_data),
+      data_received,
+      message,
+      curPage,
+      canLoadMore,
+      shouldShowLoading);
 
   @JsonKey(ignore: true)
   @override
@@ -219,7 +288,10 @@ abstract class _HistoryState implements HistoryState {
       {final HistoryStatus status,
       final List<RequestHistory> data,
       final RequestHistory? data_received,
-      final String message}) = _$HistoryStateImpl;
+      final String message,
+      final int curPage,
+      final bool canLoadMore,
+      final bool shouldShowLoading}) = _$HistoryStateImpl;
 
   @override
   HistoryStatus get status;
@@ -229,6 +301,12 @@ abstract class _HistoryState implements HistoryState {
   RequestHistory? get data_received;
   @override
   String get message;
+  @override
+  int get curPage;
+  @override // Trang hiện tại
+  bool get canLoadMore;
+  @override // Có thể tải thêm dữ liệu không
+  bool get shouldShowLoading;
   @override
   @JsonKey(ignore: true)
   _$$HistoryStateImplCopyWith<_$HistoryStateImpl> get copyWith =>

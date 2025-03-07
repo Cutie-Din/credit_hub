@@ -9,7 +9,7 @@ Future<void> main() async {
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (context) => MyApp(),
+      builder: (context) => MyApp(), // Wrap your app
     ),
   );
 }
@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
       locale: DevicePreview.locale(context),
       builder: DevicePreview.appBuilder,
+      debugShowCheckedModeBanner: false,
       initialRoute: AppRoute.splash.name,
       onGenerateRoute: AppRouteExt.generateRoute,
       navigatorKey: _globalManager.navigatorKey,
